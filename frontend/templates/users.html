@@ -1,5 +1,25 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <h3>Users Management, {{ username }}!</h3>
+    <div class="p-3">
+        <h3>Manage users</h3>
+        <users-view inline-template>
+            {%raw%}
+            <div>
+                {{hello}}
+                <div id="table"></div>
+            </div>
+            {%endraw%}
+        </users-view>
+    </div>
+{% endblock %}
+
+{% block script %}
+<!-- gridjs deps -->
+<script src="https://unpkg.com/gridjs/dist/gridjs.development.js"></script>
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" />
+
+<script src="{{ url_for('static', filename='js/diff_match_patch.js') }}"></script>
+<script src="{{ url_for('static', filename='js/users-view.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 {% endblock %}
