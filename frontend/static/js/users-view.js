@@ -1,3 +1,10 @@
+import Vue from 'https://unpkg.com/vue@2.6.0/dist/vue.esm.browser.min.js';
+import {h, Grid, PluginPosition} from 'https://cdn.skypack.dev/gridjs';
+
+function MyPlugin() {
+  return h('button', {}, 'Hello world!');
+}
+
 Vue.component('users-view', {
   data: function () {
     return {
@@ -35,6 +42,11 @@ Vue.component('users-view', {
         limit: 15,
         summary: true
       },
+    });
+    gridjsInit.plugin.add({
+      id: 'myplugin',
+      component: MyPlugin,
+      position: PluginPosition.Header,
     });
 
     // render gridjs to html

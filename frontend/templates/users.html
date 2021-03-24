@@ -2,11 +2,10 @@
 
 {% block content %}
     <div class="p-3">
-        <h3>Manage users</h3>
+        <h3>Users manager</h3>
         <users-view inline-template>
             {%raw%}
             <div>
-                {{hello}}
                 <div id="table"></div>
             </div>
             {%endraw%}
@@ -18,8 +17,14 @@
 <!-- gridjs deps -->
 <script src="https://unpkg.com/gridjs/dist/gridjs.development.js"></script>
 <link rel="stylesheet" type="text/css" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" />
+<style>
+    .gridjs-head {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
 
 <script src="{{ url_for('static', filename='js/diff_match_patch.js') }}"></script>
-<script src="{{ url_for('static', filename='js/users-view.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/users-view.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
 {% endblock %}
