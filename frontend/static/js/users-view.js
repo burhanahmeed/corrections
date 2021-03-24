@@ -2,13 +2,22 @@ import Vue from 'https://unpkg.com/vue@2.6.0/dist/vue.esm.browser.min.js';
 import {h, Grid, PluginPosition} from 'https://cdn.skypack.dev/gridjs';
 
 function MyPlugin() {
-  return h('button', {}, 'Hello world!');
+  return h('a', {
+    class: 'btn btn-primary',
+    style: 'position: absolute; right: 10px;',
+    id: "add-button"
+  }, 'Add user');
 }
 
 Vue.component('users-view', {
   data: function () {
     return {
       hello: 'hellow'
+    }
+  },
+  methods: {
+    click () {
+      alert('hello')
     }
   },
   mounted: function () {
@@ -51,5 +60,11 @@ Vue.component('users-view', {
 
     // render gridjs to html
     gridjsInit.render(document.getElementById("table"));
+
+    const vm = this;
+
+    document.getElementById('add-button').addEventListener('click', () => {
+      vm.click();
+    })
   }
 })
