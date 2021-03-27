@@ -6,8 +6,46 @@
         <users-view inline-template>
             {%raw%}
             <div>
+                <table id="tableContent">
+                    <thead>
+                      <tr>
+                        <th>Username</th>
+                        <th>Permission</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="i in users">
+                        <td>{{i.username}}</td>
+                        <td>
+                            <span 
+                                class="badge rounded-pill bg-success text-white" 
+                                v-if="i.permissions && i.permissions.manage_users"
+                            >Manage users</span>
+                            <span 
+                                class="badge rounded-pill bg-success text-white" 
+                                v-if="i.permissions && i.permissions.view_archive"
+                            >View archive</span>
+                            <p class="p-0 m-0 mt-2" v-if="i.permissions && i.permissions.queues && i.permissions.queues.length">
+                                Queues: 
+                                <span class="badge rounded-pill bg-secondary text-white" v-for="q in i.permissions.queues">
+                                    {{q}}
+                                </span>
+                            </p>
+                        </td>
+                        <td>
+                            <a href="javascript:;" @click="handleAddUserModal">
+                               <i class="far fa-edit"></i>
+                            </a> &nbsp;
+                            <a href="javascript:;" class="text-danger" @click="handleDelete">
+                               <i class="far fa-trash-alt"></i>
+                            </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 <div id="table"></div>
-                <vue-modal id="add-user-modal" name="add-user" @on-close="closeModal">
+                <vue-modal style="display: none;" name="add-user" @on-close="$vm2.close('add-user')">
                     Hello From Inside Modal Component
                 </vue-modal>
             </div>
