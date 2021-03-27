@@ -7,6 +7,9 @@
             {%raw%}
             <div>
                 <div id="table"></div>
+                <vue-modal id="add-user-modal" name="add-user" @on-close="closeModal">
+                    Hello From Inside Modal Component
+                </vue-modal>
             </div>
             {%endraw%}
         </users-view>

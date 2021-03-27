@@ -1,5 +1,10 @@
 import Vue from 'https://unpkg.com/vue@2.6.0/dist/vue.esm.browser.min.js';
 import {h, Grid, PluginPosition} from 'https://cdn.skypack.dev/gridjs';
+import VueModal from "https://unpkg.com/@burhanahmeed/vue-modal-2/dist/vue-modal-2.esm.js";
+
+Vue.use(VueModal, {
+  componentName: 'VueModal'
+})
 
 Vue.component('users-view', {
   data: function () {
@@ -56,15 +61,21 @@ Vue.component('users-view', {
         }
 
         document.getElementById('add-button').addEventListener('click', () => {
-          vm.click();
+          vm.handleAddUserModal();
         })
       })
     },
-    async click () {
+    reloadData () {
       this.gridInstance.updateConfig({
         data: () => this.onInit()
       })
       this.gridInstance.forceRender();
+    },
+    handleAddUserModal () {
+      this.$vm2.open('add-user');
+    },
+    closeModal () {
+      this.$vm2.close('add-user');
     }
   },
   mounted: function () {
@@ -78,7 +89,7 @@ Vue.component('users-view', {
           id: 'permissions',
           name: 'Permissions',
           formatter: (cell, row) => gridjs.html(
-            `tes: ${JSON.stringify(row.cells[1].data)}`
+            <span></span>
           )
         },
         {
