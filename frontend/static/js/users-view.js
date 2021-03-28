@@ -1,20 +1,38 @@
-import Vue from 'https://unpkg.com/vue@2.6.0/dist/vue.esm.browser.min.js';
-import {h, Grid, PluginPosition} from 'https://cdn.skypack.dev/gridjs';
-import VueModal from "https://unpkg.com/@burhanahmeed/vue-modal-2/dist/vue-modal-2.esm.js";
-
-Vue.use(VueModal, {
-  componentName: 'VueModal'
-})
-
 Vue.component('users-view', {
   data: function () {
     return {
       gridInstance: null,
       users: [],
+      search: '',
+      isNewUserModal: true,
+      showModalContent: false,
+      username: '',
+      roleValue: [],
+      roleOptions: [
+        {
+          id: "manage_users",
+          text: "Manage users",
+        },
+        {
+          id: "view_archive",
+          text: "View archive",
+        },
+      ],
+      queueValue: [],
+      queueOptions: [
+        {
+          id: "global",
+          text: "Global",
+        },
+        {
+          id: "secondary",
+          text: "Secondary",
+        },
+      ],
     }
   },
   methods: {
-    onInit () {
+    getUsers () {
       return new Promise(resolve => {
         fetch('https://my-json-server.typicode.com/burhanahmeed/sunnah-com-mock/users', {
           method: 'GET'
@@ -28,35 +46,33 @@ Vue.component('users-view', {
         })
       })
     },
-    reloadButton () {
-      const vm = this;
-
-      const tableHead = document.getElementsByClassName('gridjs-head');
-      if (tableHead) {
-        tableHead[0].innerHTML = `
-          <a id="add-button" class="btn btn-primary" style="position: absolute; right: 10px;">
-            Add user
-          </a>
-        `;
-      }
-
-      document.getElementById('add-button').addEventListener('click', () => {
-        vm.handleAddUserModal();
-      })
-    },
-    reloadData () {
-      this.gridInstance.updateConfig({
-        // data: () => this.onInit()
-        from: document.getElementById("tableContent"),
-      })
-      this.gridInstance.forceRender();
-      this.reloadButton();
-    },
     handleAddUserModal () {
-      this.$vm2.open('add-user');
+      $('#add-user-modal').modal();
+      this.username = '';
+      this.roleValue = []
+      this.queueValue = [];
+      this.showModalContent = true;
+    },
+    handleEditUser (selectedUser = {}) {
+      this.username = selectedUser.username;
+      if (selectedUser.permissions.manage_users) {
+        this.roleValue.push('manage_users');
+      };
+      if (selectedUser.permissions.view_archive) {
+        this.roleValue.push('view_archive');
+      }
+      this.queueValue = selectedUser.permissions.queues;
+      this.isNewUserModal = false;
+      this.showModalContent = true;
+      $('#add-user-modal').modal('show');
     },
     closeModal () {
-      this.$vm2.close('add-user');
+      this.isNewUserModal = true;
+      this.showModalContent = false;
+      this.username = '';
+      this.roleValue = []
+      this.queueValue = [];
+      $('#add-user-modal').modal('hide');
     },
     handleDelete () {
       if (confirm('Are you sure want to delete this user?')) {
@@ -64,51 +80,23 @@ Vue.component('users-view', {
       }
     }
   },
+  computed: {
+    usersData () {
+      let users = this.users;
+      users = users.filter(el => {
+        if (el.username.toLowerCase().indexOf(this.search.toLowerCase()) != -1) {
+          return true;
+        } 
+      });
+      return users;
+    }
+  },
   mounted: async function () {
-    await this.onInit();
-    this.gridInstance = new Grid({
-      // columns: [
-      //   {
-      //     id: 'username',
-      //     name: 'Username'
-      //   },
-      //   {
-      //     id: 'permissions',
-      //     name: 'Permissions',
-      //     formatter: (cell, row) => gridjs.html(
-            
-      //     )
-      //   },
-      //   {
-      //     name: 'Action',
-      //     formatter: (cell, row) => gridjs.html(
-      //       `<a href="/dashboard/edit/${row.cells[0].data}">
-      //         <i class="far fa-edit"></i>
-      //       </a>
-      //       \u00A0
-      //       <a class="text-danger" href="/dashboard/edit/${row.cells[0].data}">
-      //         <i class="far fa-trash-alt"></i>
-      //       </a>`
-      //     )
-      //   }
-      // ],
-      // data: () => this.onInit(),
-      search: {
-        enabled: true,
-      },
-      from: document.getElementById("tableContent"),
-      pagination: {
-        buttonsCount: 10,
-        limit: 10,
-        summary: true,
-      },
-    });
-
-    // render gridjs to html
-    this.gridInstance.render(document.getElementById("table"));
+    await this.getUsers();
+    const vm = this;
+    $('#add-user-modal').on('hidden.bs.modal', function (event) {
+      vm.closeModal();
+    })
     
-    setTimeout(() => {
-      this.reloadData();  
-    }, 1000);
   }
 })

@@ -1,5 +1,3 @@
-import Vue from 'https://unpkg.com/vue@2.6.0/dist/vue.esm.browser.min.js';
-
 Vue.component('correction-view', {
   props: ['token', 'queue'],
   data: function () {
